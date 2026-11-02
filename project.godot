@@ -1,0 +1,50 @@
+; Corrida Maluca dos Recordes — arquivo de configuração do Godot 4.
+; Abra esta pasta no Godot 4.3+ (testado como alvo: 4.4).
+
+config_version=5
+
+[application]
+
+config/name="Corrida Maluca dos Recordes"
+config/description="Protótipo de corrida maluca 2D mobile com carros históricos de recorde de velocidade."
+config/version="0.1.0"
+run/main_scene="res://scenes/Intro.tscn"
+config/features=PackedStringArray("4.4", "GL Compatibility")
+boot_splash/bg_color=Color(0.07, 0.05, 0.12, 1)
+config/icon="res://icon.svg"
+
+[autoload]
+
+AssetLib="*res://scripts/autoload/AssetLib.gd"
+AudioManager="*res://scripts/autoload/AudioManager.gd"
+GameManager="*res://scripts/autoload/GameManager.gd"
+
+[display]
+
+window/size/viewport_width=1280
+window/size/viewport_height=720
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
+window/handheld/orientation=4
+
+[input_devices]
+
+pointing/emulate_touch_from_mouse=true
+
+[layer_names]
+
+2d_physics/layer_1="paredes"
+2d_physics/layer_2="carros"
+2d_physics/layer_3="areas"
+2d_physics/layer_4="carros_no_ar"
+
+[physics]
+
+common/physics_ticks_per_second=60
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+textures/vram_compression/import_etc2_astc=true
+environment/defaults/default_clear_color=Color(0.07, 0.05, 0.12, 1)

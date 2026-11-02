@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="CharacterData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/CharacterData.gd" id="1_chardata"]
+
+[resource]
+script = ExtResource("1_chardata")
+id = "capitao_foguete"
+display_name = "Capitão Foguete"
+nationality = "Estados Unidos"
+bio = "Ex-astronauta (segundo ele mesmo). Acredita que qualquer problema se resolve com mais um motor a jato no Spirit of America."
+catchphrase = "Contagem regressiva é pra quem tem tempo! IÚÚÚ!"
+car_name = "Spirit of America"
+car_year = 1965
+car_record_kmh = 966.57
+car_shape = "spirit_of_america"
+body_color = Color(0.93, 0.93, 0.97, 1)
+accent_color = Color(0.86, 0.15, 0.2, 1)
+skin_color = Color(0.96, 0.76, 0.6, 1)
+hat_style = "aviator"
+hair_color = Color(0.92, 0.76, 0.3, 1)
+special_id = "pos_combustao"
+special_name = "Pós-Combustão"
+special_desc = "Jato de fogo: dispara para a frente e arremessa quem vem logo atrás."
+special_charge_time = 14.0
+max_speed = 740.0
+acceleration = 620.0
+handling = 2.6
+grip = 4.6
+weight = 1.2

@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="CharacterData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/CharacterData.gd" id="1_chardata"]
+
+[resource]
+script = ExtResource("1_chardata")
+id = "doutor_thrust"
+display_name = "Doutor Thrust"
+nationality = "Laboratório Secreto"
+bio = "Cientista maluco que confunde freio com sugestão. Seu ThrustSSC já furou a barreira do som... e três paredes do laboratório."
+catchphrase = "Mwahaha! Mach 1 é só o aquecimento!"
+car_name = "ThrustSSC"
+car_year = 1997
+car_record_kmh = 1227.99
+car_shape = "thrust_ssc"
+body_color = Color(0.22, 0.24, 0.3, 1)
+accent_color = Color(1, 0.5, 0.1, 1)
+skin_color = Color(0.98, 0.84, 0.74, 1)
+hat_style = "mad_hair"
+hair_color = Color(0.95, 0.95, 0.98, 1)
+special_id = "teleporte"
+special_name = "Teleporte Experimental"
+special_desc = "Abre um portal e salta pela pista. Funciona... quase sempre."
+special_charge_time = 15.0
+max_speed = 765.0
+acceleration = 560.0
+handling = 2.4
+grip = 3.9
+weight = 1.5

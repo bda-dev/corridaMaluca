@@ -10,6 +10,15 @@ cartoon exageradas, com física cômica, power-ups absurdos e muito *BOING!*.
 Feito em **Godot 4** (GDScript, renderizador *Compatibility*), pensado para **Android em paisagem**,
 mas jogável no PC com mouse/teclado.
 
+| | |
+|---|---|
+| ![Título](docs/screenshots/titulo.jpg) | ![Montagem histórica](docs/screenshots/intro_montagem.jpg) |
+| ![Menu](docs/screenshots/menu.jpg) | ![Seleção](docs/screenshots/selecao.jpg) |
+| ![Corrida](docs/screenshots/corrida.jpg) | ![Barreira do som](docs/screenshots/barreira_do_som.jpg) |
+| ![Intro cartoon](docs/screenshots/intro_cartoon.jpg) | ![Resultado](docs/screenshots/resultado.jpg) |
+
+*(capturas reais do jogo com os placeholders procedurais — nenhum asset baixado)*
+
 ---
 
 ## ✅ O que já está pronto
@@ -119,7 +128,8 @@ res://
 │   ├── fx/         RaceFX.gd (onomatopeias, explosões, ondas de choque, raios)
 │   ├── ui/         UIStyle.gd · RaceHUD.gd · OptionsPanel.gd · PauseMenu.gd
 │   └── results/    Results.gd
-├── docs/           ASSETS_KENNEY.md · ANDROID_EXPORT.md
+├── docs/           ASSETS_KENNEY.md · ANDROID_EXPORT.md · screenshots/
+├── tests/          SmokeTest.tscn (teste automático) · Screenshots.tscn (capturas)
 └── tools/          kenney_import.py (copia os arquivos dos packs para os nomes certos)
 ```
 
@@ -160,14 +170,19 @@ Intro ──toque──► MainMenu ──Jogar──► CharacterSelect ──C
 
 ## ⚠️ Observações deste protótipo
 
-* O código foi verificado com o parser/linter de GDScript (gdtoolkit) e revisado manualmente, mas
-  **ainda não foi executado dentro do editor Godot** no ambiente em que foi gerado. Na primeira
-  abertura, confira a aba *Saída/Depurador*; qualquer ajuste deve ser pontual.
-* **Teste de fumaça** (abre todas as telas e roda uma corrida inteira no piloto automático):
+* Testado no **Godot 4.4.1** (headless + renderização OpenGL via Xvfb): todas as cenas carregam
+  sem erros de script e uma corrida completa de 3 voltas termina com os 5 carros.
+* **Teste de fumaça** — abre todas as telas, simula toques reais (pular intro, segurar para acelerar,
+  arrastar para virar, ITEM com outro dedo, FREIO, toque duplo) e roda uma corrida inteira no
+  piloto automático; sai com código ≠ 0 se algo falhar:
   ```bash
   godot --headless --path . res://tests/SmokeTest.tscn
   ```
-  ou abra `tests/SmokeTest.tscn` no editor e aperte **F6**. Ele imprime a classificação final.
+  (ou abra `tests/SmokeTest.tscn` no editor e aperte **F6**).
+* **Screenshots** de todas as telas (precisa de vídeo; no Linux sem tela use `xvfb-run`):
+  ```bash
+  godot --path . res://tests/Screenshots.tscn -- --out=/tmp/shots
+  ```
 * Balanceamento (velocidades, aderência, IA) é um ponto de partida — os números estão concentrados
   nos `.tres` dos pilotos e nas constantes do topo de `Car.gd`.
 * Próximos passos sugeridos: mais pistas, Blue Bird jogável, fantasma do recorde (ghost car),

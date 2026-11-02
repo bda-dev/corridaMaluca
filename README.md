@@ -1,5 +1,7 @@
 # 🏁 Corrida Maluca dos Recordes
 
+[![Smoke test (Godot)](https://github.com/bda-dev/corridaMaluca/actions/workflows/smoke-test.yml/badge.svg)](https://github.com/bda-dev/corridaMaluca/actions/workflows/smoke-test.yml)
+
 > *"Quebre o recorde… ou quebre o carro!"*
 
 Protótipo de jogo **mobile 2D** de corrida maluca (estilo desenho animado de corrida maluca)
@@ -179,6 +181,9 @@ Intro ──toque──► MainMenu ──Jogar──► CharacterSelect ──C
   godot --headless --path . res://tests/SmokeTest.tscn
   ```
   (ou abra `tests/SmokeTest.tscn` no editor e aperte **F6**).
+  O mesmo teste roda no **GitHub Actions** a cada push na `main` e em todo PR
+  (`.github/workflows/smoke-test.yml`): baixa o Godot 4.4.1 (hash SHA-512 conferido), importa o
+  projeto e falha se o teste reportar FAIL/TIMEOUT ou se o log tiver qualquer `SCRIPT ERROR`.
 * **Screenshots** de todas as telas (precisa de vídeo; no Linux sem tela use `xvfb-run`):
   ```bash
   godot --path . res://tests/Screenshots.tscn -- --out=/tmp/shots

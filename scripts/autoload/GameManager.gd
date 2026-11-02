@@ -80,7 +80,10 @@ func _ready() -> void:
 	_register_input_actions()
 	load_game()
 	apply_settings()
-	get_tree().root.theme = UIStyle.build_theme()
+	var theme := UIStyle.build_theme()
+	get_tree().root.theme = theme
+	# mescla no tema padrão: vale também para cenas instanciadas sob nós que não são Control
+	ThemeDB.get_default_theme().merge_with(theme)
 	_build_fade_layer()
 
 
@@ -136,7 +139,7 @@ func _build_fade_layer() -> void:
 	_fade_rect = ColorRect.new()
 	_fade_rect.color = Color(UIStyle.BG, 0.0)
 	_fade_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_fade_rect.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_fade_rect.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	layer.add_child(_fade_rect)
 
 

@@ -91,6 +91,7 @@ func _spawn_cars() -> void:
 		else:
 			car.controller = AIController.new(car, _rng.randf_range(0.9, 1.02))
 		cars.append(car)
+	_update_positions()
 
 
 func _physics_process(delta: float) -> void:

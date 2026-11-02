@@ -57,13 +57,13 @@ func _ready() -> void:
 
 func _build_ui() -> void:
 	_type_label = UIStyle.make_label(INTRO_TEXT, 38, UIStyle.CREAM, 0)
-	_type_label.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_type_label.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	_type_label.visible_characters = 0
 	_type_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	add_child(_type_label)
 
 	_title_center = CenterContainer.new()
-	_title_center.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_title_center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	_title_center.offset_bottom = -110
 	_title_center.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_title_center)
@@ -75,13 +75,13 @@ func _build_ui() -> void:
 	vb.add_child(_make_letter_row(TITLE_2, 70, UIStyle.ORANGE))
 
 	_slogan = UIStyle.make_label(SLOGAN, 36, UIStyle.CREAM, 10)
-	_slogan.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_slogan.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	_slogan.offset_top = 250
 	_slogan.visible = false
 	add_child(_slogan)
 
 	_prompt = UIStyle.make_label("TOQUE PARA COMEÇAR", 30, UIStyle.YELLOW, 8)
-	_prompt.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_prompt.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	_prompt.offset_top = 470
 	_prompt.visible = false
 	add_child(_prompt)

@@ -61,7 +61,7 @@ func _land() -> void:
 
 
 func _draw() -> void:
-	var s := 1.0 + height / 350.0
+	var s := 1.0 + height / 600.0
 	var shadow_r := 22.0 * clampf(1.0 - height / 1200.0, 0.3, 1.0)
 	draw_colored_polygon(CarArt.ellipse(Vector2.ZERO, Vector2(shadow_r, shadow_r * 0.7), 14), Color(0, 0, 0, 0.3))
 	draw_set_transform(Vector2(0, -height * 0.15), _spin, Vector2(s, s))

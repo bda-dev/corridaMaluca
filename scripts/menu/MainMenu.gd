@@ -20,7 +20,7 @@ func _ready() -> void:
 
 func _build_ui() -> void:
 	var top := VBoxContainer.new()
-	top.set_anchors_preset(Control.PRESET_TOP_WIDE)
+	top.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
 	top.offset_top = 18
 	top.offset_bottom = 200
 	top.add_theme_constant_override("separation", -10)
@@ -32,7 +32,7 @@ func _build_ui() -> void:
 	top.add_child(_logo_2)
 
 	var center := CenterContainer.new()
-	center.set_anchors_preset(Control.PRESET_FULL_RECT)
+	center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	center.offset_top = 190
 	center.offset_bottom = -150
 	center.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -58,7 +58,7 @@ func _build_ui() -> void:
 		_buttons.add_child(quit)
 
 	_records = UIStyle.make_label("", 20, UIStyle.CREAM, 6)
-	_records.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
+	_records.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
 	_records.offset_top = -40
 	_records.offset_bottom = -8
 	add_child(_records)

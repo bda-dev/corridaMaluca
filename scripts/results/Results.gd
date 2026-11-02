@@ -32,12 +32,12 @@ func _ready() -> void:
 
 func _build_ui() -> void:
 	var title := UIStyle.make_label("VITÓRIA!" if _player_pos == 1 else "RESULTADO", 54, UIStyle.YELLOW, 12, HORIZONTAL_ALIGNMENT_CENTER, true)
-	title.set_anchors_preset(Control.PRESET_TOP_WIDE)
+	title.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
 	title.offset_top = 6
 	title.offset_bottom = 70
 	add_child(title)
 	var sub := UIStyle.make_label("%s  ·  %d voltas" % [_results.get("track_name", ""), int(_results.get("laps", 3))], 20, UIStyle.CREAM, 5)
-	sub.set_anchors_preset(Control.PRESET_TOP_WIDE)
+	sub.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
 	sub.offset_top = 64
 	sub.offset_bottom = 92
 	add_child(sub)
@@ -114,7 +114,7 @@ func _build_ui() -> void:
 
 	# --- botões
 	var buttons := HBoxContainer.new()
-	buttons.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
+	buttons.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
 	buttons.offset_top = -104
 	buttons.offset_bottom = -22
 	buttons.alignment = BoxContainer.ALIGNMENT_CENTER

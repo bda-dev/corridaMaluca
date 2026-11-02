@@ -67,7 +67,7 @@ func _is_play() -> bool:
 
 func _build_ui() -> void:
 	_title = UIStyle.make_label("ESCOLHA SEU PILOTO" if _is_play() else "PERSONAGENS", 46, UIStyle.YELLOW, 12, HORIZONTAL_ALIGNMENT_CENTER, true)
-	_title.set_anchors_preset(Control.PRESET_TOP_WIDE)
+	_title.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
 	_title.offset_top = 10
 	_title.offset_bottom = 80
 	add_child(_title)
@@ -223,7 +223,9 @@ func _draw() -> void:
 	draw_colored_polygon(PackedVector2Array([Vector2(lc - 40, 70), Vector2(lc + 40, 70), Vector2(lc + 230, 470), Vector2(lc - 210, 470)]), Color(1, 0.95, 0.7, 0.08))
 	draw_colored_polygon(CarArt.ellipse(Vector2(lc + 10, 468), Vector2(200, 34), 32), UIStyle.INK)
 	draw_colored_polygon(CarArt.ellipse(Vector2(lc + 10, 460), Vector2(194, 30), 32), Color(0.35, 0.25, 0.55))
-	draw_arc(Vector2(lc + 10, 460), 194, 0, TAU, 40, UIStyle.YELLOW, 3.0, true)
+	var rim := CarArt.ellipse(Vector2(lc + 10, 460), Vector2(194, 30), 40)
+	rim.append(rim[0])
+	draw_polyline(rim, UIStyle.YELLOW, 3.0, true)
 	var e = _entries[_index]
 	var bounce := absf(sin(_t * 6.0)) * 3.0
 	if e is CharacterData:

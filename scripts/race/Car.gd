@@ -21,6 +21,7 @@ const SPIN_RATE := 13.0
 const WALL_CRASH_SPEED := 430.0
 const WALL_BOUNCE_SPEED := 140.0
 const CAR_CRASH_SPEED := 540.0
+const ABS_MAX_SPEED := 1450.0 # teto absoluto (turbos somados não passam disso)
 
 var data: CharacterData
 var race: RaceController
@@ -228,6 +229,7 @@ func _drive(delta: float) -> void:
 	velocity = fwd * fspeed + side * lspeed
 	if magnet_timer > 0.0:
 		_apply_magnet(delta)
+	velocity = velocity.limit_length(ABS_MAX_SPEED)
 
 
 func _apply_magnet(delta: float) -> void:

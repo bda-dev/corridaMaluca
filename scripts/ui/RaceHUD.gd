@@ -69,7 +69,7 @@ class Speedo extends Control:
 		var ma := PI + PI * (GameManager.MACH_1_KMH / max_kmh)
 		draw_line(c + Vector2(cos(ma), sin(ma)) * (r - 16), c + Vector2(cos(ma), sin(ma)) * (r + 16), Color(0.6, 0.9, 1.0), 4.0)
 		var na := PI + PI * k
-		draw_line(c, c + Vector2(cos(na), sin(na)) * (r - 6), UIStyle.CREAM, 5.0, true)
+		draw_line(c + Vector2(cos(na), sin(na)) * 48.0, c + Vector2(cos(na), sin(na)) * (r - 6), UIStyle.CREAM, 5.0, true)
 		draw_circle(c, 9.0, UIStyle.INK)
 		UIStyle.draw_text(self, c + Vector2(0, -42), "%d" % int(kmh), 42, UIStyle.CREAM, 8, true)
 		UIStyle.draw_text(self, c + Vector2(0, -12), "km/h", 18, UIStyle.CREAM, 5)
@@ -227,13 +227,13 @@ func setup(p_race: RaceController) -> void:
 
 func _build() -> void:
 	_root = Control.new()
-	_root.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	_root.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_root)
 
 	_overlay = Overlay.new()
 	_overlay.hud = self
-	_overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	_overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_root.add_child(_overlay)
 
@@ -339,7 +339,7 @@ func _layout() -> void:
 	_msg.position = Vector2(0, vs.y * 0.22)
 	_msg.size = Vector2(vs.x, 160)
 	_msg.pivot_offset = _msg.size * 0.5
-	_tutorial.position = Vector2(0, vs.y * 0.52)
+	_tutorial.position = Vector2(0, vs.y - 300.0)
 	_tutorial.size = Vector2(vs.x, 140)
 
 

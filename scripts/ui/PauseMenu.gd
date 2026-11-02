@@ -12,14 +12,14 @@ func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	visible = false
 	_panel = Control.new()
-	_panel.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_panel.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(_panel)
 	var dim := ColorRect.new()
 	dim.color = Color(0.05, 0.03, 0.1, 0.7)
-	dim.set_anchors_preset(Control.PRESET_FULL_RECT)
+	dim.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	_panel.add_child(dim)
 	var center := CenterContainer.new()
-	center.set_anchors_preset(Control.PRESET_FULL_RECT)
+	center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	_panel.add_child(center)
 	var box := PanelContainer.new()
 	center.add_child(box)

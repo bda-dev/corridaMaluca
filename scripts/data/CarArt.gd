@@ -37,9 +37,13 @@ static func half_ellipse(c: Vector2, r: Vector2, a0: float, a1: float, n: int = 
 
 
 static func rrect(rect: Rect2, radius: float, n: int = 4) -> PackedVector2Array:
-	var r := clampf(radius, 0.5, minf(rect.size.x, rect.size.y) * 0.5 - 0.01)
 	var p := rect.position
 	var s := rect.size
+	# deixa pelo menos 2 px de lado reto: vértices quase duplicados quebram a triangulação
+	var max_r := minf(s.x, s.y) * 0.5 - 1.0
+	if radius < 0.5 or max_r < 0.75:
+		return PackedVector2Array([p, p + Vector2(s.x, 0), p + s, p + Vector2(0, s.y)])
+	var r := minf(radius, max_r)
 	var corners := [p + Vector2(s.x - r, r), p + Vector2(s.x - r, s.y - r), p + Vector2(r, s.y - r), p + Vector2(r, r)]
 	var starts := [-PI * 0.5, 0.0, PI * 0.5, PI]
 	var pts := PackedVector2Array()

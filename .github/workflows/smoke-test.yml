@@ -1,6 +1,10 @@
 # Roda o teste de fumaça do jogo (tests/SmokeTest.tscn) num Godot headless:
 # abre todas as telas, simula toques e corre uma corrida completa de 3 voltas.
 # Falha se o teste reportar FAIL/TIMEOUT ou se aparecer qualquer erro de script.
+#
+# Sem actions de terceiros (nenhum "uses:"): o checkout é feito com git e o Godot é
+# baixado do release oficial com o SHA-512 conferido. Funciona mesmo com a política
+# "permitir só actions do próprio repositório".
 name: Smoke test (Godot)
 
 on:
@@ -27,33 +31,37 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Cache do Godot
-        id: cache-godot
-        uses: actions/cache@v4
-        with:
-          path: ~/godot
-          key: godot-${{ env.GODOT_VERSION }}-linux-x86_64
+      - name: Checkout (git)
+        env:
+          TOKEN: ${{ github.token }}
+        run: |
+          git init -q .
+          git remote add origin "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}.git"
+          # token só no cabeçalho deste comando (não fica salvo no .git/config)
+          auth="AUTHORIZATION: basic $(printf 'x-access-token:%s' "$TOKEN" | base64 -w0)"
+          git -c http.extraheader="$auth" fetch -q --no-tags --depth 1 origin "$GITHUB_SHA"
+          git checkout -q FETCH_HEAD
+          git log -1 --format='Commit testado: %h %s'
 
       - name: Baixar Godot ${{ env.GODOT_VERSION }}
-        if: steps.cache-godot.outputs.cache-hit != 'true'
         run: |
           zip="Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip"
-          curl -sSfL -o "/tmp/$zip" "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/$zip"
-          echo "${GODOT_SHA512}  /tmp/$zip" | sha512sum -c -
-          mkdir -p ~/godot
-          unzip -q "/tmp/$zip" -d ~/godot
-          mv ~/godot/Godot_v${GODOT_VERSION}-stable_linux.x86_64 ~/godot/godot
-          chmod +x ~/godot/godot
+          curl -sSfL --retry 3 -o "$RUNNER_TEMP/$zip" \
+            "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/$zip"
+          echo "${GODOT_SHA512}  $RUNNER_TEMP/$zip" | sha512sum -c -
+          mkdir -p "$RUNNER_TEMP/godot"
+          unzip -q "$RUNNER_TEMP/$zip" -d "$RUNNER_TEMP/godot"
+          mv "$RUNNER_TEMP/godot/Godot_v${GODOT_VERSION}-stable_linux.x86_64" "$RUNNER_TEMP/godot/godot"
+          chmod +x "$RUNNER_TEMP/godot/godot"
+          "$RUNNER_TEMP/godot/godot" --version
 
       - name: Importar projeto (gera o cache de classes)
-        run: timeout 300 ~/godot/godot --headless --path . --import
+        run: timeout 300 "$RUNNER_TEMP/godot/godot" --headless --path . --import
 
       - name: Teste de fumaça
         run: |
           set -o pipefail
-          timeout 600 ~/godot/godot --headless --path . res://tests/SmokeTest.tscn 2>&1 | tee smoke.log
+          timeout 600 "$RUNNER_TEMP/godot/godot" --headless --path . res://tests/SmokeTest.tscn 2>&1 | tee smoke.log
           if grep -E "SCRIPT ERROR|Parse Error|Failed to load script" smoke.log; then
             echo "::error::Erros de script no log do Godot"
             exit 1
@@ -66,13 +74,6 @@ jobs:
           {
             echo "### Teste de fumaça — Godot ${GODOT_VERSION}"
             echo '```'
-            grep "\[smoke\]" smoke.log || echo "(sem saída do teste)"
+            grep "\[smoke\]" smoke.log 2>/dev/null || echo "(sem saída do teste)"
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
-
-      - name: Guardar log
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: smoke-log
-          path: smoke.log

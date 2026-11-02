@@ -136,6 +136,7 @@ func _draw() -> void:
 # ---------------------------------------------------------------- ações
 
 func _on_play() -> void:
+	GameManager.request_mobile_web_fullscreen()
 	GameManager.select_mode = "play"
 	GameManager.go_to("select")
 

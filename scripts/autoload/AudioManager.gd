@@ -5,6 +5,10 @@ extends Node
 ##   assets/custom/audio/nome.(ogg|wav|mp3) -> assets/kenney/audio/nome.(...) -> Synth (placeholder)
 ## Músicas: arquivo "music_<nome>" (ex.: assets/kenney/audio/music_race.ogg) ou chiptune sintetizado.
 ## O motor do jogador usa "engine" (loop) ou um zumbido sintetizado.
+##
+## Com threads (celular/PC): música e efeitos placeholder são sintetizados numa Thread.
+## Sem threads (exportação web "nothreads"): tudo é sintetizado em FATIAS dentro de
+## _process(), respeitando um orçamento de milissegundos por frame, para não travar.
 
 const SFX_POOL_SIZE := 12
 
@@ -20,6 +24,12 @@ var _music_thread: Thread
 var _rendering_name := ""
 var _music_tween: Tween
 var _sfx_thread: Thread
+var _use_threads := OS.has_feature("threads")
+var _prewarm_queue: Array[String] = []
+var _song_job: SongRender
+
+## Orçamento de síntese por frame quando não há threads (web).
+const SLICE_BUDGET_USEC := 4000
 
 ## Efeitos pré-gerados numa thread ao abrir o jogo (evita engasgos no celular).
 const PREWARM_SFX: Array[String] = ["type", "whoosh", "boom", "honk", "boost", "click", "count", "go",
@@ -44,8 +54,12 @@ func _ready() -> void:
 	for n in PREWARM_SFX:
 		if AssetLib.audio(n) == null:
 			todo.append(n)
-	_sfx_thread = Thread.new()
-	_sfx_thread.start(_prewarm_sfx.bind(todo))
+	if _use_threads:
+		_sfx_thread = Thread.new()
+		_sfx_thread.start(_prewarm_sfx.bind(todo))
+	else:
+		_prewarm_queue = todo
+		_prewarm_queue.append("__engine")
 
 
 func _prewarm_sfx(names: Array[String]) -> Dictionary:
@@ -143,11 +157,14 @@ func stop_music() -> void:
 
 
 func _start_render_if_idle() -> void:
-	if _music_thread != null or _music_name == "" or _music_cache.has(_music_name):
+	if _music_thread != null or _song_job != null or _music_name == "" or _music_cache.has(_music_name):
 		return
 	_rendering_name = _music_name
-	_music_thread = Thread.new()
-	_music_thread.start(_render_song.bind(_rendering_name))
+	if _use_threads:
+		_music_thread = Thread.new()
+		_music_thread.start(_render_song.bind(_rendering_name))
+	else:
+		_song_job = SongRender.new(Synth.song(_rendering_name))
 
 
 func _render_song(song_name: String) -> AudioStreamWAV:
@@ -155,6 +172,9 @@ func _render_song(song_name: String) -> AudioStreamWAV:
 
 
 func _process(_delta: float) -> void:
+	if not _use_threads:
+		_process_slices()
+		return
 	if _sfx_thread != null and not _sfx_thread.is_alive():
 		var done: Dictionary = _sfx_thread.wait_to_finish()
 		_sfx_thread = null
@@ -164,11 +184,32 @@ func _process(_delta: float) -> void:
 	if _music_thread != null and not _music_thread.is_alive():
 		var stream: AudioStream = _music_thread.wait_to_finish()
 		_music_thread = null
-		_music_cache[_rendering_name] = stream
-		if _rendering_name == _music_name:
-			_start_music(stream)
+		_on_song_ready(stream)
+
+
+func _on_song_ready(stream: AudioStream) -> void:
+	_music_cache[_rendering_name] = stream
+	if _rendering_name == _music_name:
+		_start_music(stream)
+	else:
+		_start_render_if_idle()
+
+
+## Sem threads: sintetiza um pouco por frame (primeiro os efeitos, depois a música).
+func _process_slices() -> void:
+	var t0 := Time.get_ticks_usec()
+	while Time.get_ticks_usec() - t0 < SLICE_BUDGET_USEC:
+		if not _prewarm_queue.is_empty():
+			var n: String = _prewarm_queue.pop_front()
+			if not _streams.has(n):
+				_streams[n] = Synth.engine_loop() if n == "__engine" else Synth.make_sfx(n)
+		elif _song_job != null:
+			if _song_job.process(1):
+				var job := _song_job
+				_song_job = null
+				_on_song_ready(job.get_stream())
 		else:
-			_start_render_if_idle()
+			return
 
 
 func _start_music(stream: AudioStream) -> void:

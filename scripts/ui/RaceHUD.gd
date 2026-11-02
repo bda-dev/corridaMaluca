@@ -294,19 +294,25 @@ func _add_button(id: String, radius: float, color: Color) -> void:
 func _safe_margins() -> Rect2:
 	# x = esquerda, y = topo, w = direita, h = baixo (em pixels do viewport)
 	var m := Rect2(22, 18, 22, 18)
-	if not GameManager.is_mobile():
+	# Só no app nativo (Android/iOS). No navegador o canvas já fica dentro da área segura,
+	# e o tamanho de tela informado pode vir "em pé" com a janela deitada (margens absurdas).
+	if not OS.has_feature("mobile") or OS.has_feature("web"):
 		return m
 	var safe := DisplayServer.get_display_safe_area()
 	var screen := DisplayServer.screen_get_size()
-	if screen.x <= 0 or screen.y <= 0:
+	if screen.x <= 0 or screen.y <= 0 or safe.size.x <= 0 or safe.size.y <= 0:
 		return m
 	var vs := _root.size
 	var kx := vs.x / float(screen.x)
 	var ky := vs.y / float(screen.y)
-	m.position.x += safe.position.x * kx
-	m.position.y += safe.position.y * ky
-	m.size.x += (screen.x - safe.end.x) * kx
-	m.size.y += (screen.y - safe.end.y) * ky
+	var extra := Rect2(safe.position.x * kx, safe.position.y * ky,
+		(screen.x - safe.end.x) * kx, (screen.y - safe.end.y) * ky)
+	# sanidade: notch/barras nunca passam de 15% da tela; valores fora disso são ignorados
+	if extra.position.x < 0.0 or extra.position.y < 0.0 or extra.size.x < 0.0 or extra.size.y < 0.0 \
+			or extra.position.x + extra.size.x > vs.x * 0.15 or extra.position.y + extra.size.y > vs.y * 0.15:
+		return m
+	m.position += extra.position
+	m.size += extra.size
 	return m
 
 

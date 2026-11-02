@@ -19,6 +19,7 @@ var _race: RaceController
 var _elapsed := 0.0
 var _failures := 0
 var _item_signal := false
+var _max_out := {} # carro -> maior distância do eixo da pista (px)
 var _special_signal := false
 
 
@@ -49,9 +50,16 @@ func _process(delta: float) -> void:
 	if _race == null:
 		return
 	_elapsed += delta
+	for c in _race.cars:
+		var d := _race.track.query(c.global_position).y
+		if d > float(_max_out.get(c, 0.0)):
+			_max_out[c] = d
+			if d > _race.track.wall_distance + 8.0:
+				print("[smoke] fora da parede: %s a %.0f px do eixo (z=%.0f, pos=%s, t=%.1f)" % [c.data.display_name, d, c.z, c.global_position, _race.race_time])
 	if _race.state == RaceController.State.FINISHED:
 		_report("CHEGADA")
 		get_tree().quit(1 if _failures > 0 else 0)
+		_race = null
 	elif _elapsed > TIMEOUT:
 		_report("TIMEOUT")
 		get_tree().quit(1)
@@ -59,6 +67,10 @@ func _process(delta: float) -> void:
 
 func _report(label: String) -> void:
 	Engine.time_scale = 1.0
+	var worst := 0.0
+	for c in _max_out:
+		worst = maxf(worst, float(_max_out[c]))
+	_check(worst <= _race.track.wall_distance + 8.0, "nenhum carro atravessou a barreira (máx. %.0f px do eixo, parede a %.0f)" % [worst, _race.track.wall_distance])
 	print("[smoke] %s em %.1f s de corrida" % [label, _race.race_time])
 	var sorted: Array[Car] = _race.cars.duplicate()
 	sorted.sort_custom(func(a: Car, b: Car) -> bool: return a.position_rank < b.position_rank)

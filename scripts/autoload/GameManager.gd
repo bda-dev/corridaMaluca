@@ -71,6 +71,7 @@ var last_results := {}
 var intro_seen := false
 
 var _fade_rect: ColorRect
+var _rotate_hint: Control
 var _changing := false
 
 
@@ -141,6 +142,39 @@ func _build_fade_layer() -> void:
 	_fade_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_fade_rect.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	layer.add_child(_fade_rect)
+	_build_rotate_hint()
+
+
+## Aviso "gire o celular" quando a tela está em pé (acontece no navegador; o APK é travado
+## em paisagem). Bloqueia toques até girar.
+func _build_rotate_hint() -> void:
+	var layer := CanvasLayer.new()
+	layer.layer = 99
+	add_child(layer)
+	_rotate_hint = ColorRect.new()
+	(_rotate_hint as ColorRect).color = Color(UIStyle.BG, 0.96)
+	_rotate_hint.mouse_filter = Control.MOUSE_FILTER_STOP
+	_rotate_hint.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	layer.add_child(_rotate_hint)
+	var msg := UIStyle.make_label("GIRE O CELULAR\npara jogar deitado", 64, UIStyle.YELLOW, 14, HORIZONTAL_ALIGNMENT_CENTER, true)
+	msg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_rotate_hint.add_child(msg)
+	get_viewport().size_changed.connect(_update_rotate_hint)
+	_update_rotate_hint()
+
+
+func _update_rotate_hint() -> void:
+	var s := get_viewport().get_visible_rect().size
+	_rotate_hint.visible = s.y > s.x * 1.05
+
+
+## Navegador do celular: tela cheia + trava em paisagem (precisa de um toque do jogador;
+## falhas são ignoradas — ex.: iPhone não deixa o Safari travar a orientação).
+func request_mobile_web_fullscreen() -> void:
+	if not (OS.has_feature("web") and is_mobile()):
+		return
+	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
+	JavaScriptBridge.eval("try { screen.orientation.lock('landscape').catch(function(){}); } catch (e) {}", true)
 
 
 # ---------------------------------------------------------------- configurações

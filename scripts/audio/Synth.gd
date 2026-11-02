@@ -244,64 +244,10 @@ static func song(song_name: String) -> Dictionary:
 	}
 
 
-## Renderiza uma música inteira (chamado numa Thread pelo AudioManager).
+## Renderiza uma música inteira de uma vez (usado na Thread do AudioManager).
+## Sem threads (exportação web), o AudioManager usa SongRender aos poucos, frame a frame.
 static func render_song(def: Dictionary) -> AudioStreamWAV:
-	var rate := 16000
-	var bpm: float = def["bpm"]
-	var chords: Array = def["chords"]
-	var lead: Array = def["lead"]
-	var lead_alt: Array = def["lead_alt"]
-	var bass: Array = def["bass"]
-	var kicks: Array = def["kick"]
-	var snares: Array = def["snare"]
-	var hats: Array = def["hat"]
-	var spb := int(round(60.0 / bpm / 4.0 * rate)) # amostras por semicolcheia
-	var total_steps := chords.size() * 16
-	var out := PackedFloat32Array()
-	out.resize(spb * total_steps)
-	var noise_tab := PackedFloat32Array()
-	noise_tab.resize(4096)
-	for i in 4096:
-		noise_tab[i] = randf() * 2.0 - 1.0
-	var ph_lead := 0.0
-	var ph_bass := 0.0
-	var ph_kick := 0.0
-	for s in total_steps:
-		var bar := int(float(s) / 16.0)
-		var st := s % 16
-		var chord: Array = chords[bar]
-		var pattern: Array = lead_alt if bar % 4 == 3 else lead
-		var li: int = pattern[st]
-		var bi: int = bass[st]
-		var lead_f := 0.0
-		var bass_f := 0.0
-		if li >= 0:
-			var ln: int = chord[li % 3] + 12 * int(li / 3.0) + 12
-			lead_f = midi_hz(ln)
-		if bi >= 0:
-			var bn: int = chord[bi % 3] + 12 * int(bi / 3.0) - 24
-			bass_f = midi_hz(bn)
-		var is_kick := kicks.has(st)
-		var is_snare := snares.has(st)
-		var is_hat := hats.has(st)
-		ph_kick = 0.0
-		for j in spb:
-			var idx := s * spb + j
-			var tl := float(j) / rate
-			var v := 0.0
-			if lead_f > 0.0:
-				ph_lead = fmod(ph_lead + lead_f / rate, 1.0)
-				v += (0.13 if ph_lead < 0.25 else -0.13) * (1.0 - float(j) / spb * 0.7)
-			if bass_f > 0.0:
-				ph_bass = fmod(ph_bass + bass_f / rate, 1.0)
-				v += (4.0 * absf(ph_bass - 0.5) - 1.0) * 0.22 * (1.0 - float(j) / spb * 0.3)
-			if is_kick and tl < 0.14:
-				var kf := 150.0 * exp(-tl * 30.0) + 42.0
-				ph_kick = fmod(ph_kick + kf / rate, 1.0)
-				v += sin(ph_kick * TAU) * 0.42 * exp(-tl * 22.0)
-			if is_snare and tl < 0.12:
-				v += noise_tab[idx & 4095] * 0.2 * exp(-tl * 24.0)
-			if is_hat and tl < 0.04:
-				v += (noise_tab[idx & 4095] - noise_tab[(idx + 1) & 4095]) * 0.05 * exp(-tl * 90.0)
-			out[idx] = v
-	return to_wav(out, rate, true)
+	var job := SongRender.new(def)
+	while not job.process(64):
+		pass
+	return job.get_stream()

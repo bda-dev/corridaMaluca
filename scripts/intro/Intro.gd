@@ -45,7 +45,8 @@ var _cartoon: Array[CharacterData] = []
 
 
 func _ready() -> void:
-	mouse_filter = Control.MOUSE_FILTER_STOP
+	# IGNORE: assim toques/cliques não são "engolidos" pela GUI e chegam em _unhandled_input
+	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	for id in CARTOON_ORDER:
 		var c := GameManager.get_character(id)
 		if c != null:

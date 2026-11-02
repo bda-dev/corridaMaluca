@@ -19,6 +19,12 @@ var _music_cache := {}
 var _music_thread: Thread
 var _rendering_name := ""
 var _music_tween: Tween
+var _sfx_thread: Thread
+
+## Efeitos pré-gerados numa thread ao abrir o jogo (evita engasgos no celular).
+const PREWARM_SFX: Array[String] = ["type", "whoosh", "boom", "honk", "boost", "click", "count", "go",
+	"pickup", "roll", "crash", "boing", "spin", "rocket", "explosion", "zap", "steam", "magnet",
+	"land", "lap", "finish", "record", "teleport", "banana", "splat", "clank", "ops", "star"]
 
 
 func _ready() -> void:
@@ -33,6 +39,21 @@ func _ready() -> void:
 	_music_player = AudioStreamPlayer.new()
 	_music_player.bus = "Music"
 	add_child(_music_player)
+	# só sintetiza o que não tem arquivo (a checagem de arquivos fica na thread principal)
+	var todo: Array[String] = []
+	for n in PREWARM_SFX:
+		if AssetLib.audio(n) == null:
+			todo.append(n)
+	_sfx_thread = Thread.new()
+	_sfx_thread.start(_prewarm_sfx.bind(todo))
+
+
+func _prewarm_sfx(names: Array[String]) -> Dictionary:
+	var out := {}
+	for n in names:
+		out[n] = Synth.make_sfx(n)
+	out["__engine"] = Synth.engine_loop()
+	return out
 
 
 func _ensure_bus(bus_name: String) -> void:
@@ -134,6 +155,12 @@ func _render_song(song_name: String) -> AudioStreamWAV:
 
 
 func _process(_delta: float) -> void:
+	if _sfx_thread != null and not _sfx_thread.is_alive():
+		var done: Dictionary = _sfx_thread.wait_to_finish()
+		_sfx_thread = null
+		for k in done:
+			if not _streams.has(k):
+				_streams[k] = done[k]
 	if _music_thread != null and not _music_thread.is_alive():
 		var stream: AudioStream = _music_thread.wait_to_finish()
 		_music_thread = null
@@ -184,3 +211,5 @@ func _force_loop(stream: AudioStream) -> void:
 func _exit_tree() -> void:
 	if _music_thread != null:
 		_music_thread.wait_to_finish()
+	if _sfx_thread != null:
+		_sfx_thread.wait_to_finish()

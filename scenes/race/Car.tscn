@@ -1,0 +1,22 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/race/Car.gd" id="1_car"]
+[ext_resource type="Script" path="res://scripts/race/CarVisual.gd" id="2_visual"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_car"]
+radius = 22.0
+height = 92.0
+
+[node name="Car" type="CharacterBody2D"]
+collision_layer = 2
+collision_mask = 3
+motion_mode = 1
+wall_min_slide_angle = 0.0
+script = ExtResource("1_car")
+
+[node name="Collision" type="CollisionShape2D" parent="."]
+rotation = 1.5708
+shape = SubResource("CapsuleShape2D_car")
+
+[node name="Visual" type="Node2D" parent="."]
+script = ExtResource("2_visual")

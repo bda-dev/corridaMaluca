@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+  <!-- Ícone placeholder: carro de recorde com raio. Troque por arte final em assets/custom/. -->
+  <rect x="4" y="4" width="120" height="120" rx="26" fill="#2b1d4a" stroke="#14101f" stroke-width="6"/>
+  <path d="M10 92 L118 92" stroke="#ffd23f" stroke-width="6" stroke-dasharray="14 10"/>
+  <path d="M18 78 Q30 54 62 54 L96 58 Q114 62 116 74 L116 80 L18 80 Z" fill="#e63946" stroke="#14101f" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M50 54 Q58 40 72 42 L80 56 Z" fill="#9fd8ff" stroke="#14101f" stroke-width="4" stroke-linejoin="round"/>
+  <circle cx="38" cy="82" r="11" fill="#1a1423" stroke="#fff4d6" stroke-width="3"/>
+  <circle cx="96" cy="82" r="11" fill="#1a1423" stroke="#fff4d6" stroke-width="3"/>
+  <path d="M70 10 L56 36 L68 36 L58 52 L82 26 L70 26 L80 10 Z" fill="#ffd23f" stroke="#14101f" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M6 64 L16 64 M4 72 L14 72" stroke="#fff4d6" stroke-width="4" stroke-linecap="round"/>
+</svg>

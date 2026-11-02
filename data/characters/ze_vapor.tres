@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="CharacterData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/CharacterData.gd" id="1_chardata"]
+
+[resource]
+script = ExtResource("1_chardata")
+id = "ze_vapor"
+display_name = "Zé Vapor"
+nationality = "Brasil"
+bio = "Inventor de quintal que achou uma La Jamais Contente no ferro-velho e enfiou uma caldeira nela. Movida a café coado e gambiarra."
+catchphrase = "Bora, que a chaleira tá fervendo, sô!"
+car_name = "La Jamais Contente (a vapor)"
+car_year = 1899
+car_record_kmh = 105.88
+car_shape = "jamais_contente"
+body_color = Color(0.15, 0.62, 0.3, 1)
+accent_color = Color(1, 0.85, 0.1, 1)
+skin_color = Color(0.78, 0.55, 0.38, 1)
+hat_style = "straw_hat"
+hair_color = Color(0.12, 0.08, 0.05, 1)
+special_id = "nuvem_vapor"
+special_name = "Nuvem de Vapor"
+special_desc = "Solta uma nuvem de vapor que atola quem vem atrás e ganha um empurrãozinho."
+special_charge_time = 12.0
+max_speed = 670.0
+acceleration = 740.0
+handling = 3.4
+grip = 7.0
+weight = 1.3

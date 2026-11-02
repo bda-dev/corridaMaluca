@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="CharacterData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/data/CharacterData.gd" id="1_chardata"]
+
+[resource]
+script = ExtResource("1_chardata")
+id = "comte_eclair"
+display_name = "Comte Éclair"
+nationality = "França"
+bio = "Aristocrata francês que jura ter inventado a eletricidade. Pilota um Jeantaud Duc de 1898 movido a baterias, vaidade e croissants."
+catchphrase = "Sacrebleu! Isso sim é corrente alternada!"
+car_name = "Jeantaud Duc"
+car_year = 1898
+car_record_kmh = 63.15
+car_shape = "jeantaud"
+body_color = Color(0.45, 0.3, 0.75, 1)
+accent_color = Color(0.98, 0.8, 0.25, 1)
+skin_color = Color(1, 0.85, 0.72, 1)
+hat_style = "top_hat"
+hair_color = Color(0.15, 0.1, 0.08, 1)
+special_id = "faisca"
+special_name = "Faísca Nobre"
+special_desc = "Descarga elétrica que deixa os rivais próximos tontos e lentos."
+special_charge_time = 13.0
+max_speed = 650.0
+acceleration = 900.0
+handling = 3.3
+grip = 6.0
+weight = 0.9

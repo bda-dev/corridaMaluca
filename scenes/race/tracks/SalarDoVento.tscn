@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/race/Track.gd" id="1_track"]
+
+[sub_resource type="Curve2D" id="Curve2D_salar"]
+_data = {
+"points": PackedVector2Array(-412.1, 23, 412.1, -23, 0, 0, -575, -0, 575, 0, 1500, 0, -469.6, -47.9, 469.6, 47.9, 3000, 0, -249.2, -201.2, 249.2, 201.2, 3950, 250, -0, -306.7, 0, 306.7, 4300, 1050, 220.4, -191.7, -220.4, 191.7, 3950, 1850, 268.3, 38.3, -268.3, -38.3, 3150, 2050, 249.2, 57.5, -249.2, -57.5, 2550, 1650, 191.7, -172.5, -191.7, 172.5, 1850, 1750, 191.7, -258.8, -191.7, 258.8, 1550, 2550, 383.3, -95.8, -383.3, 95.8, 850, 3100, 421.7, 124.6, -421.7, -124.6, -450, 3050, 210.8, 306.7, -210.8, -306.7, -1350, 2450, -38.3, 345, 38.3, -345, -1550, 1450, -172.5, 254.9, 172.5, -254.9, -1150, 650, -220.4, 124.6, 220.4, -124.6, -650, 120, -412.1, 23, 412.1, -23, 0, 0)
+}
+point_count = 17
+
+[node name="SalarDoVento" type="Node2D"]
+script = ExtResource("1_track")
+track_id = "salar_do_vento"
+track_name = "Salar do Vento Maluco"
+
+[node name="Path" type="Path2D" parent="."]
+curve = SubResource("Curve2D_salar")
